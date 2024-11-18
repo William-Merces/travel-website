@@ -1,31 +1,38 @@
-import { useState, useEffect } from 'react';
+'use client';
+
+import { useState } from 'react';
 import { Flight } from '@/types/flight';
 
-export const useFlights = (searchParams?: any) => {
-    const [flights, setFlights] = useState<Flight[]>([]);
+export function useFlights() {
     const [loading, setLoading] = useState(false);
+    const [flights, setFlights] = useState<Flight[]>([]);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (!searchParams) return;
-
-        const fetchFlights = async () => {
+    const searchFlights = async (searchParams: any) => {
+        try {
             setLoading(true);
-            try {
-                const queryString = new URLSearchParams(searchParams).toString();
-                const response = await fetch(`/api/flights?${queryString}`);
-                if (!response.ok) throw new Error('Failed to fetch flights');
-                const data = await response.json();
-                setFlights(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
+            setError(null);
+
+            const response = await fetch('/api/flights', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(searchParams),
+            });
+
+            if (!response.ok) {
+                throw new Error('Falha ao buscar voos');
             }
-        };
 
-        fetchFlights();
-    }, [searchParams]);
+            const data = await response.json();
+            setFlights(data);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Erro ao buscar voos');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    return { flights, loading, error };
-};
+    return { flights, loading, error, searchFlights };
+}

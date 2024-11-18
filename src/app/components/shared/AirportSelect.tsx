@@ -1,6 +1,8 @@
+// AirportSelect.tsx
 'use client'
 import { useState, useEffect } from 'react';
 import { Autocomplete, TextField, CircularProgress } from '@mui/material';
+import { MapPin } from 'lucide-react';
 
 interface AirportOption {
     iataCode: string;
@@ -53,20 +55,26 @@ export const AirportSelect = ({ label, value, onChange }: AirportSelectProps) =>
             options={options}
             getOptionLabel={(option) => {
                 if (typeof option === 'string') return option;
-                return `${option.city} (${option.iataCode}) - ${option.country}`;
+                return `${option.city} (${option.iataCode})`;
             }}
             renderInput={(params) => (
                 <TextField
                     {...params}
                     label={label}
+                    size="small"
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (
                             <>
-                                {loading && <CircularProgress color="inherit" size={20} />}
+                                {loading && <CircularProgress color="inherit" size={16} />}
                                 {params.InputProps.endAdornment}
                             </>
                         ),
+                    }}
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            height: '40px'
+                        }
                     }}
                 />
             )}
@@ -75,7 +83,11 @@ export const AirportSelect = ({ label, value, onChange }: AirportSelectProps) =>
             isOptionEqualToValue={(option, value) =>
                 option.iataCode === value || option.iataCode === value.iataCode
             }
-            fullWidth
+            noOptionsText="Nenhum aeroporto encontrado"
+            loadingText="Buscando..."
+            sx={{
+                width: '100%'
+            }}
         />
     );
 };
