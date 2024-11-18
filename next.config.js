@@ -1,11 +1,7 @@
+// next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    domains: ['images.unsplash.com'],
-  },
-  experimental: {
-    appDir: true,
-  },
+  // suas configurações aqui
 }
 
 module.exports = nextConfig
