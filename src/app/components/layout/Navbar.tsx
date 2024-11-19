@@ -1,201 +1,196 @@
 'use client'
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     AppBar,
     Box,
     Toolbar,
-    IconButton,
-    Typography,
-    Menu,
     Container,
-    Avatar,
+    IconButton,
     Button,
-    Tooltip,
-    MenuItem,
-    Drawer,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemText,
     useTheme,
-    useMediaQuery
+    useMediaQuery,
+    Menu,
+    MenuItem,
+    Typography,
 } from '@mui/material';
 import {
-    Menu as MenuIcon,
     FlightTakeoff,
     Hotel,
-    CardTravel,
+    BeachAccess,
     Language,
-    AccountCircle
+    AccountCircle,
+    Menu as MenuIcon
 } from '@mui/icons-material';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useNavigation } from '../../contexts/NavigationContext';
 
-const navigation = [
-    { name: 'Voos', href: '/flights', icon: <FlightTakeoff /> },
-    { name: 'Hotéis', href: '/hotels', icon: <Hotel /> },
-    { name: 'Pacotes', href: '/packages', icon: <CardTravel /> },
-];
-
-const userMenu = [
-    { name: 'Perfil', href: '/profile' },
-    { name: 'Minhas Reservas', href: '/booking' },
-    { name: 'Sair', href: '/auth/logout' },
-];
-
-const Navbar = () => {
-    const [mobileOpen, setMobileOpen] = useState(false);
-    const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+export default function Navbar() {
+    const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const router = useRouter();
+    const { activeSection, setActiveSection } = useNavigation();
 
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
+    const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setMobileMenuAnchor(event.currentTarget);
     };
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
+    const handleMobileMenuClose = () => {
+        setMobileMenuAnchor(null);
     };
 
-    const drawer = (
-        <Box onClick={() => setMobileOpen(false)}>
-            <List>
-                {navigation.map((item) => (
-                    <ListItem key={item.name} disablePadding>
-                        <ListItemButton component={Link} href={item.href}>
-                            {item.icon}
-                            <ListItemText primary={item.name} sx={{ ml: 2 }} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-        </Box>
-    );
+    const handleNavigation = (section: 'flights' | 'hotels' | 'packages') => {
+        setActiveSection(section);
+        router.push(`/${section}`);
+        handleMobileMenuClose();
+    };
 
     return (
-        <AppBar position="sticky">
+        <AppBar
+            position="sticky"
+            sx={{
+                background: 'primary.main',
+                boxShadow: 'none',
+                height: '64px', // Altura reduzida
+            }}
+        >
             <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    {/* Logo */}
-                    <FlightTakeoff sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component={Link}
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontWeight: 700,
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        VIAGENS
-                    </Typography>
-
-                    {/* Mobile menu button */}
-                    <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            onClick={() => setMobileOpen(!mobileOpen)}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                    </Box>
-
-                    {/* Mobile logo */}
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component={Link}
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'flex', md: 'none' },
-                            flexGrow: 1,
-                            fontWeight: 700,
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        VIAGENS
-                    </Typography>
-
-                    {/* Desktop navigation */}
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {navigation.map((item) => (
-                            <Button
-                                key={item.name}
-                                component={Link}
-                                href={item.href}
-                                startIcon={item.icon}
-                                sx={{ my: 2, color: 'white', display: 'flex' }}
+                <Toolbar 
+                    sx={{ 
+                        justifyContent: 'space-between',
+                        minHeight: '64px !important', // Forçar altura menor
+                    }}
+                >
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Link href="/" style={{ textDecoration: 'none', color: 'white', display: 'flex', alignItems: 'center' }}>
+                            <FlightTakeoff sx={{ mr: 1, fontSize: '1.5rem' }} />
+                            <Typography 
+                                variant="h6" 
+                                component="div" 
+                                sx={{ 
+                                    fontWeight: 'bold', 
+                                    mr: 4,
+                                    fontSize: '1.25rem' // Tamanho reduzido
+                                }}
                             >
-                                {item.name}
-                            </Button>
-                        ))}
+                                VIAGENS
+                            </Typography>
+                        </Link>
+
+                        {!isMobile && (
+                            <Box sx={{ display: 'flex', gap: 2 }}>
+                                <Button
+                                    color="inherit"
+                                    startIcon={<FlightTakeoff sx={{ fontSize: '1.25rem' }} />}
+                                    onClick={() => handleNavigation('flights')}
+                                    sx={{
+                                        borderBottom: activeSection === 'flights' ? '2px solid white' : 'none',
+                                        borderRadius: 0,
+                                        fontSize: '0.875rem', // Tamanho reduzido
+                                        py: 0.5
+                                    }}
+                                >
+                                    Voos
+                                </Button>
+                                <Button
+                                    color="inherit"
+                                    startIcon={<Hotel sx={{ fontSize: '1.25rem' }} />}
+                                    onClick={() => handleNavigation('hotels')}
+                                    sx={{
+                                        borderBottom: activeSection === 'hotels' ? '2px solid white' : 'none',
+                                        borderRadius: 0,
+                                        fontSize: '0.875rem', // Tamanho reduzido
+                                        py: 0.5
+                                    }}
+                                >
+                                    Hotéis
+                                </Button>
+                                <Button
+                                    color="inherit"
+                                    startIcon={<BeachAccess sx={{ fontSize: '1.25rem' }} />}
+                                    onClick={() => handleNavigation('packages')}
+                                    sx={{
+                                        borderBottom: activeSection === 'packages' ? '2px solid white' : 'none',
+                                        borderRadius: 0,
+                                        fontSize: '0.875rem', // Tamanho reduzido
+                                        py: 0.5
+                                    }}
+                                >
+                                    Pacotes
+                                </Button>
+                            </Box>
+                        )}
                     </Box>
 
-                    {/* Language selector */}
-                    <IconButton sx={{ mr: 2 }} color="inherit">
-                        <Language />
-                    </IconButton>
-
-                    {/* User menu */}
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Abrir configurações">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar>
-                                    <AccountCircle />
-                                </Avatar>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        {!isMobile && (
+                            <IconButton color="inherit" size="small">
+                                <Language sx={{ fontSize: '1.25rem' }} />
                             </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {userMenu.map((item) => (
-                                <MenuItem
-                                    key={item.name}
-                                    onClick={handleCloseUserMenu}
-                                    component={Link}
-                                    href={item.href}
+                        )}
+
+                        {isMobile ? (
+                            <>
+                                <IconButton
+                                    size="small"
+                                    edge="end"
+                                    color="inherit"
+                                    onClick={handleMobileMenuOpen}
                                 >
-                                    <Typography textAlign="center">{item.name}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
+                                    <MenuIcon sx={{ fontSize: '1.5rem' }} />
+                                </IconButton>
+                                <Menu
+                                    anchorEl={mobileMenuAnchor}
+                                    open={Boolean(mobileMenuAnchor)}
+                                    onClose={handleMobileMenuClose}
+                                    PaperProps={{
+                                        elevation: 0,
+                                        sx: {
+                                            overflow: 'visible',
+                                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                            mt: 1.5,
+                                            '& .MuiMenuItem-root': {
+                                                fontSize: '0.875rem',
+                                                py: 1
+                                            }
+                                        },
+                                    }}
+                                >
+                                    <MenuItem onClick={() => handleNavigation('flights')}>
+                                        <FlightTakeoff sx={{ mr: 1, fontSize: '1.25rem' }} /> Voos
+                                    </MenuItem>
+                                    <MenuItem onClick={() => handleNavigation('hotels')}>
+                                        <Hotel sx={{ mr: 1, fontSize: '1.25rem' }} /> Hotéis
+                                    </MenuItem>
+                                    <MenuItem onClick={() => handleNavigation('packages')}>
+                                        <BeachAccess sx={{ mr: 1, fontSize: '1.25rem' }} /> Pacotes
+                                    </MenuItem>
+                                    <MenuItem onClick={handleMobileMenuClose}>
+                                        <Language sx={{ mr: 1, fontSize: '1.25rem' }} /> Idioma
+                                    </MenuItem>
+                                    <MenuItem onClick={handleMobileMenuClose} component={Link} href="/profile">
+                                        <AccountCircle sx={{ mr: 1, fontSize: '1.25rem' }} /> Minha Conta
+                                    </MenuItem>
+                                </Menu>
+                            </>
+                        ) : (
+                            <Button
+                                color="inherit"
+                                startIcon={<AccountCircle sx={{ fontSize: '1.25rem' }} />}
+                                component={Link}
+                                href="/profile"
+                                sx={{
+                                    fontSize: '0.875rem', // Tamanho reduzido
+                                    py: 0.5
+                                }}
+                            >
+                                Minha Conta
+                            </Button>
+                        )}
                     </Box>
                 </Toolbar>
             </Container>
-
-            {/* Mobile drawer */}
-            <Drawer
-                variant="temporary"
-                anchor="left"
-                open={mobileOpen}
-                onClose={() => setMobileOpen(false)}
-                ModalProps={{
-                    keepMounted: true, // Better mobile performance
-                }}
-            >
-                {drawer}
-            </Drawer>
         </AppBar>
     );
-};
-
-export default Navbar;
+}
