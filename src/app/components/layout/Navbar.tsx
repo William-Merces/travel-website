@@ -49,29 +49,30 @@ export default function Navbar() {
     return (
         <AppBar
             position="sticky"
+            component="nav"
             sx={{
                 background: 'primary.main',
                 boxShadow: 'none',
-                height: '64px', // Altura reduzida
+                height: '64px',
             }}
         >
             <Container maxWidth="xl">
-                <Toolbar 
-                    sx={{ 
+                <Toolbar
+                    sx={{
                         justifyContent: 'space-between',
-                        minHeight: '64px !important', // Forçar altura menor
+                        minHeight: '64px !important',
                     }}
                 >
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Link href="/" style={{ textDecoration: 'none', color: 'white', display: 'flex', alignItems: 'center' }}>
                             <FlightTakeoff sx={{ mr: 1, fontSize: '1.5rem' }} />
-                            <Typography 
-                                variant="h6" 
-                                component="div" 
-                                sx={{ 
-                                    fontWeight: 'bold', 
+                            <Typography
+                                variant="h6"
+                                component="div"
+                                sx={{
+                                    fontWeight: 'bold',
                                     mr: 4,
-                                    fontSize: '1.25rem' // Tamanho reduzido
+                                    fontSize: '1.25rem'
                                 }}
                             >
                                 VIAGENS
@@ -82,42 +83,36 @@ export default function Navbar() {
                             <Box sx={{ display: 'flex', gap: 2 }}>
                                 <Button
                                     color="inherit"
-                                    startIcon={<FlightTakeoff sx={{ fontSize: '1.25rem' }} />}
+                                    startIcon={<FlightTakeoff />}
                                     onClick={() => handleNavigation('flights')}
                                     sx={{
                                         borderBottom: activeSection === 'flights' ? '2px solid white' : 'none',
-                                        borderRadius: 0,
-                                        fontSize: '0.875rem', // Tamanho reduzido
-                                        py: 0.5
+                                        borderRadius: 0
                                     }}
                                 >
-                                    Voos
+                                    Passagens Aéreas
                                 </Button>
                                 <Button
                                     color="inherit"
-                                    startIcon={<Hotel sx={{ fontSize: '1.25rem' }} />}
+                                    startIcon={<Hotel />}
                                     onClick={() => handleNavigation('hotels')}
                                     sx={{
                                         borderBottom: activeSection === 'hotels' ? '2px solid white' : 'none',
-                                        borderRadius: 0,
-                                        fontSize: '0.875rem', // Tamanho reduzido
-                                        py: 0.5
+                                        borderRadius: 0
                                     }}
                                 >
-                                    Hotéis
+                                    Hospedagem
                                 </Button>
                                 <Button
                                     color="inherit"
-                                    startIcon={<BeachAccess sx={{ fontSize: '1.25rem' }} />}
+                                    startIcon={<BeachAccess />}
                                     onClick={() => handleNavigation('packages')}
                                     sx={{
                                         borderBottom: activeSection === 'packages' ? '2px solid white' : 'none',
-                                        borderRadius: 0,
-                                        fontSize: '0.875rem', // Tamanho reduzido
-                                        py: 0.5
+                                        borderRadius: 0
                                     }}
                                 >
-                                    Pacotes
+                                    Viagens Completas
                                 </Button>
                             </Box>
                         )}
@@ -158,19 +153,13 @@ export default function Navbar() {
                                     }}
                                 >
                                     <MenuItem onClick={() => handleNavigation('flights')}>
-                                        <FlightTakeoff sx={{ mr: 1, fontSize: '1.25rem' }} /> Voos
+                                        <FlightTakeoff sx={{ mr: 1 }} /> Passagens Aéreas
                                     </MenuItem>
                                     <MenuItem onClick={() => handleNavigation('hotels')}>
-                                        <Hotel sx={{ mr: 1, fontSize: '1.25rem' }} /> Hotéis
+                                        <Hotel sx={{ mr: 1 }} /> Hospedagem
                                     </MenuItem>
                                     <MenuItem onClick={() => handleNavigation('packages')}>
-                                        <BeachAccess sx={{ mr: 1, fontSize: '1.25rem' }} /> Pacotes
-                                    </MenuItem>
-                                    <MenuItem onClick={handleMobileMenuClose}>
-                                        <Language sx={{ mr: 1, fontSize: '1.25rem' }} /> Idioma
-                                    </MenuItem>
-                                    <MenuItem onClick={handleMobileMenuClose} component={Link} href="/profile">
-                                        <AccountCircle sx={{ mr: 1, fontSize: '1.25rem' }} /> Minha Conta
+                                        <BeachAccess sx={{ mr: 1 }} /> Viagens Completas
                                     </MenuItem>
                                 </Menu>
                             </>
@@ -181,7 +170,7 @@ export default function Navbar() {
                                 component={Link}
                                 href="/profile"
                                 sx={{
-                                    fontSize: '0.875rem', // Tamanho reduzido
+                                    fontSize: '0.875rem',
                                     py: 0.5
                                 }}
                             >
